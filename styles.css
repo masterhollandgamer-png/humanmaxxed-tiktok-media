@@ -616,6 +616,206 @@ h1 em {
   color: var(--accent);
 }
 
+.oauth-page {
+  --oauth-gold: oklch(0.76 0.14 70);
+  --oauth-gold-dark: oklch(0.55 0.14 55);
+  --oauth-error: oklch(0.69 0.18 30);
+}
+
+.oauth-stage {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1.45fr);
+  gap: clamp(2.5rem, 8vw, 8rem);
+  align-items: center;
+  min-height: calc(100svh - 14rem);
+  padding-block: clamp(4rem, 9vw, 7rem);
+}
+
+.oauth-context {
+  align-self: start;
+  padding-top: 1.5rem;
+}
+
+.oauth-context-copy {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.oauth-card {
+  position: relative;
+  width: 100%;
+  max-width: 45rem;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border-top: 4px solid var(--oauth-gold);
+  background: var(--surface);
+}
+
+.status-symbol {
+  display: grid;
+  width: 3.5rem;
+  aspect-ratio: 1;
+  margin-bottom: 2rem;
+  place-items: center;
+  border: 2px solid var(--oauth-gold);
+  border-radius: 50%;
+  color: var(--oauth-gold);
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.oauth-card[data-status="success"] .status-symbol {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.oauth-card[data-status="error"] {
+  border-top-color: var(--oauth-error);
+}
+
+.oauth-card[data-status="error"] .status-symbol {
+  border-color: var(--oauth-error);
+  color: var(--oauth-error);
+}
+
+.status-kicker {
+  margin: 0 0 0.75rem;
+  color: var(--oauth-gold);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.oauth-card[data-status="success"] .status-kicker {
+  color: var(--accent);
+}
+
+.oauth-card[data-status="error"] .status-kicker {
+  color: var(--oauth-error);
+}
+
+.oauth-card h1 {
+  max-width: 13ch;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 0.98;
+}
+
+.status-message {
+  max-width: 58ch;
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.response-details {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.response-details[hidden],
+.response-field[hidden],
+.error-list > div[hidden] {
+  display: none;
+}
+
+.response-field h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.code-box {
+  max-height: 12rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  overflow: auto;
+  border: 1px solid var(--oauth-gold-dark);
+  background: var(--bg);
+}
+
+.code-box-secondary {
+  border-color: var(--line);
+}
+
+.code-box code,
+.error-list dd {
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9rem;
+  font-variant-ligatures: none;
+  white-space: pre-wrap;
+}
+
+.copy-button {
+  width: 100%;
+  min-height: 3.25rem;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 850;
+}
+
+.copy-button:active {
+  transform: translateY(1px);
+}
+
+.sandbox-note,
+.field-note,
+.copy-status,
+.noscript-note {
+  margin: 0.75rem 0 0;
+  color: var(--quiet);
+  font-size: 0.88rem;
+}
+
+.copy-status:not(:empty) {
+  color: var(--accent);
+}
+
+.error-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.error-list > div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.25fr) minmax(0, 1.75fr);
+  gap: 1rem;
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.error-list dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.error-list dd {
+  margin: 0;
+}
+
+.noscript-note {
+  padding: 1rem;
+  border: 1px solid var(--oauth-error);
+  color: var(--ink);
+}
+
+.home-button {
+  width: 100%;
+  margin-top: 2.5rem;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -634,8 +834,21 @@ h1 em {
   .section-heading,
   .status-band,
   .legal-callout,
-  .legal-layout {
+  .legal-layout,
+  .oauth-stage {
     grid-template-columns: 1fr;
+  }
+
+  .oauth-stage {
+    gap: 2rem;
+  }
+
+  .oauth-context {
+    padding-top: 0;
+  }
+
+  .oauth-context-copy {
+    max-width: 58ch;
   }
 
   .hero {
@@ -700,6 +913,23 @@ h1 em {
 
   .legal-callout {
     gap: 2rem;
+  }
+
+  .oauth-stage {
+    padding-block: 3rem;
+  }
+
+  .oauth-card {
+    width: 100%;
+  }
+
+  .oauth-card h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .error-list > div {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .site-footer {

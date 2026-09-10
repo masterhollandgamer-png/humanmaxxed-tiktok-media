@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="HumanMaxxed TikTok OAuth callback for Sandbox development.">
+  <meta name="theme-color" content="oklch(0.10 0 0)">
+  <meta name="robots" content="noindex, nofollow">
+  <title>TikTok authorization | HumanMaxxed</title>
+  <link rel="stylesheet" href="../../../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../../" aria-label="HumanMaxxed home">
+      <span class="brand-mark" aria-hidden="true"><span>HM</span></span>
+      <span>HumanMaxxed</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="../../../">Home</a>
+      <a href="../../../privacy.html">Privacy Policy</a>
+      <a href="../../../terms.html">Terms of Service</a>
+    </nav>
+  </header>
+
+  <main id="main-content" class="oauth-page">
+    <section class="oauth-stage" aria-labelledby="status-title">
+      <div class="oauth-context">
+        <p class="signal"><span aria-hidden="true"></span> TikTok OAuth callback</p>
+        <p class="oauth-context-copy">This page receives TikTok’s authorization response. It does not contact a token endpoint or store credentials.</p>
+      </div>
+
+      <div class="oauth-card" id="oauth-card" data-status="waiting" aria-live="polite">
+        <div class="status-symbol" id="status-symbol" aria-hidden="true">··</div>
+        <p class="status-kicker" id="status-kicker">Authorization response</p>
+        <h1 id="status-title">Reading TikTok response</h1>
+        <p class="status-message" id="status-message">Checking this URL for an authorization code or error.</p>
+
+        <div class="response-details" id="response-details" hidden>
+          <section class="response-field" id="code-group" hidden aria-labelledby="code-label">
+            <h2 id="code-label">Authorization code</h2>
+            <div class="code-box">
+              <code id="authorization-code"></code>
+            </div>
+            <button class="button button-primary copy-button" id="copy-code" type="button">Copy authorization code</button>
+            <p class="sandbox-note">Sandbox development only. This code has not been exchanged for tokens and is not saved by this page.</p>
+            <p class="copy-status" id="copy-status" role="status"></p>
+          </section>
+
+          <section class="response-field" id="state-group" hidden aria-labelledby="state-label">
+            <h2 id="state-label">State value returned</h2>
+            <div class="code-box code-box-secondary">
+              <code id="state-value"></code>
+            </div>
+            <p class="field-note">A state value was included in the response. This page displays its presence but does not validate it.</p>
+          </section>
+
+          <section class="response-field" id="error-group" hidden aria-labelledby="error-label">
+            <h2 id="error-label">Error details</h2>
+            <dl class="error-list">
+              <div id="error-name-row" hidden>
+                <dt>Error</dt>
+                <dd id="error-name"></dd>
+              </div>
+              <div id="error-description-row" hidden>
+                <dt>Description</dt>
+                <dd id="error-description"></dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+
+        <noscript>
+          <p class="noscript-note">JavaScript is required to read the TikTok response from this page’s URL. No information has been sent or stored.</p>
+        </noscript>
+
+        <a class="button button-secondary home-button" href="../../../">Return to HumanMaxxed homepage</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand brand-small" href="../../../" aria-label="HumanMaxxed home">
+      <span class="brand-mark" aria-hidden="true"><span>HM</span></span>
+      <span>HumanMaxxed</span>
+    </a>
+    <p>Built for deliberate progress.</p>
+    <nav aria-label="Footer navigation">
+      <a href="../../../privacy.html">Privacy Policy</a>
+      <a href="../../../terms.html">Terms of Service</a>
+    </nav>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const params = new URLSearchParams(window.location.search);
+      const code = sanitizeDisplayValue(params.get('code'), 4096);
+      const state = sanitizeDisplayValue(params.get('state'), 2048);
+      const error = sanitizeDisplayValue(params.get('error'), 512);
+      const errorDescription = sanitizeDisplayValue(params.get('error_description'), 2048);
+
+      const card = document.getElementById('oauth-card');
+      const symbol = document.getElementById('status-symbol');
+      const kicker = document.getElementById('status-kicker');
+      const title = document.getElementById('status-title');
+      const message = document.getElementById('status-message');
+      const details = document.getElementById('response-details');
+      const codeGroup = document.getElementById('code-group');
+      const stateGroup = document.getElementById('state-group');
+      const errorGroup = document.getElementById('error-group');
+
+      function sanitizeDisplayValue(value, maximumLength) {
+        if (value === null) return '';
+        return value
+          .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '�')
+          .slice(0, maximumLength);
+      }
+
+      function setText(elementId, value) {
+        document.getElementById(elementId).textContent = value;
+      }
+
+      function showStateValue() {
+        if (!state) return;
+        setText('state-value', state);
+        stateGroup.hidden = false;
+        details.hidden = false;
+      }
+
+      if (error || errorDescription) {
+        card.dataset.status = 'error';
+        symbol.textContent = '!';
+        kicker.textContent = 'Authorization interrupted';
+        title.textContent = 'TikTok authorization was not completed';
+        message.textContent = 'TikTok returned an error instead of an authorization code. Review the details below and return to HumanMaxxed when ready.';
+
+        if (error) {
+          setText('error-name', error);
+          document.getElementById('error-name-row').hidden = false;
+        }
+
+        if (errorDescription) {
+          setText('error-description', errorDescription);
+          document.getElementById('error-description-row').hidden = false;
+        }
+
+        errorGroup.hidden = false;
+        details.hidden = false;
+        showStateValue();
+      } else if (code) {
+        card.dataset.status = 'success';
+        symbol.textContent = '✓';
+        kicker.textContent = 'Authorization returned';
+        title.textContent = 'HumanMaxxed connected to TikTok';
+        message.textContent = 'TikTok authorization was successful. The authorization code was returned to HumanMaxxed. The secure server-side token exchange is the next step.';
+        setText('authorization-code', code);
+        codeGroup.hidden = false;
+        details.hidden = false;
+        showStateValue();
+
+        document.getElementById('copy-code').addEventListener('click', async () => {
+          const copyStatus = document.getElementById('copy-status');
+
+          try {
+            await navigator.clipboard.writeText(code);
+            copyStatus.textContent = 'Authorization code copied.';
+          } catch {
+            const range = document.createRange();
+            range.selectNodeContents(document.getElementById('authorization-code'));
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            copyStatus.textContent = 'Copy was blocked by the browser. The code is selected so you can copy it manually.';
+          }
+        });
+      } else {
+        card.dataset.status = 'empty';
+        symbol.textContent = '·';
+        kicker.textContent = 'No response received';
+        title.textContent = 'No TikTok authorization response was found.';
+        message.textContent = 'This URL does not contain an authorization code or an error. Return to HumanMaxxed to continue.';
+        showStateValue();
+      }
+    })();
+  </script>
+</body>
+</html>
+
